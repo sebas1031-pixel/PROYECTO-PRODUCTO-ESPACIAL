@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="co.edu.poli.pif.vista.SecondaryController">
+
+    <center>
+        <VBox spacing="10" alignment="CENTER">
+            <Label text="Ventana secundaria (ej. Acerca de)"/>
+            <Button text="Volver" onAction="#switchToPrimary"/>
+        </VBox>
+    </center>
+
+</BorderPane>
