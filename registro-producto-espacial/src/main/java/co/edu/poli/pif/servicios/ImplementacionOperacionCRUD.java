@@ -1,84 +1,106 @@
 package co.edu.poli.pif.servicios;
+
 import co.edu.poli.pif.model.ProductoEspacial;
-import java.io.*; import java.util.*;
+import java.io.*;
+import java.util.*;
+
 /**
- * Implementación en memoria del CRUD con serialización binaria.
- * Mantiene un {@link LinkedHashMap} para preservar el orden de inserción.
+ * Implementacion del CRUD con serializacion binaria.
+ * Soporta IDs ingresados manualmente.
  */
 public class ImplementacionOperacionCRUD implements OperacionCRUD, OperacionArchivo, Serializable {
 
-    /** Almacén en memoria indexado por ID. */
+    /** Mapa principal por ID. */
     private final Map<Integer, ProductoEspacial> data = new LinkedHashMap<>();
-    /** Siguiente ID a asignar. */
+
+    /** Siguiente ID autogenerado (solo si el usuario no ingresa ID). */
     private int nextId = 1;
 
-    /** Crea el servicio con un almacén vacío. */
+    /** Constructor. */
     public ImplementacionOperacionCRUD() {}
 
-    /** Genera un ID incremental.
-     *  @return nuevo id
-     */
-    private int generarId(){ return nextId++; }
+    /** Genera ID incremental. */
+    private int generarId() { return nextId++; }
 
-    /** {@inheritDoc} */
+    /** Ajusta nextId para que nunca retroceda. */
+    private void actualizarNextId(int idUsuario) {
+        if (idUsuario >= nextId)
+            nextId = idUsuario + 1;
+    }
+
+    // -------------------------------------------------------------------------
+
     @Override
     public String create(ProductoEspacial p) {
         if (p == null) return "ERROR: objeto nulo";
-        p.setId(generarId());
-        data.put(p.getId(), p);
-        return "OK: creado ID " + p.getId();
+
+        int id = p.getId();
+
+        // Si el usuario NO escribió un ID → generar uno
+        if (id <= 0) {
+            id = generarId();
+            p.setId(id);
+        } else {
+            // Si el ID viene manual → respetarlo
+            actualizarNextId(id);
+        }
+
+        data.put(id, p);
+        return "OK: creado ID " + id;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ProductoEspacial[] readAll() {
         return data.values().toArray(new ProductoEspacial[0]);
     }
 
-    /** {@inheritDoc} */
     @Override
     public ProductoEspacial readId(int id) {
         return data.get(id);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String update(int id, ProductoEspacial p) {
-        if (!data.containsKey(id)) return "ERROR: no existe ID " + id;
-        if (p == null) return "ERROR: objeto nulo";
+        if (!data.containsKey(id))
+            return "ERROR: no existe ID " + id;
+
         p.setId(id);
         data.put(id, p);
         return "OK: actualizado ID " + id;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ProductoEspacial delete(int id) {
         return data.remove(id);
     }
 
-    /** {@inheritDoc} */
+    // -------------------- ARCHIVO ---------------------------------------------
+
     @Override
     public String serializar(String ruta) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ruta))) {
             oos.writeObject(nextId);
             oos.writeObject(new ArrayList<>(data.values()));
-            return "OK: serializado en " + ruta;
+            return "OK serializado";
         } catch (IOException e) {
             return "ERROR serializando: " + e.getMessage();
         }
     }
 
-    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
     public String deserializar(String ruta) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ruta))) {
             this.nextId = (Integer) ois.readObject();
             List<ProductoEspacial> lista = (List<ProductoEspacial>) ois.readObject();
+
             data.clear();
-            for (ProductoEspacial p : lista) data.put(p.getId(), p);
-            return "OK: deserializado (" + data.size() + " registros)";
+            for (ProductoEspacial p : lista) {
+                data.put(p.getId(), p);
+                actualizarNextId(p.getId());
+            }
+
+            return "OK deserializado";
         } catch (IOException | ClassNotFoundException e) {
             return "ERROR deserializando: " + e.getMessage();
         }

@@ -4,109 +4,91 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="co.edu.poli.pif.vista.PrimaryController">
 
-    <!-- Título + botones -->
     <top>
-        <VBox spacing="10">
-            <Label text="Registro de Producto Espacial">
-                <padding>
-                    <Insets top="15" left="20" />
-                </padding>
-                <style>
-                    -fx-font-size: 22px;
-                    -fx-font-weight: bold;
-                </style>
-            </Label>
-
-            <HBox spacing="10" alignment="CENTER_RIGHT">
-                <padding>
-                    <Insets left="20" right="20" bottom="10" />
-                </padding>
-                <Button fx:id="btnNuevo" text="Nuevo" onAction="#onNuevo"/>
-                <Button fx:id="btnEditar" text="Editar" onAction="#onEditar"/>
-                <Button fx:id="btnEliminar" text="Eliminar" onAction="#onEliminar"/>
-                <Button fx:id="btnRefrescar" text="Refrescar" onAction="#onRefrescar"/>
-            </HBox>
-        </VBox>
+        <Label text="Registro de Productos Espaciales"
+               style="-fx-font-size:22px; -fx-font-weight:bold; -fx-padding: 15 15 15 15;" />
     </top>
 
-    <!-- Centro: tabla + formulario -->
-    <center>
-        <SplitPane dividerPositions="0.45">
-            <items>
-                <!-- Tabla -->
-                <VBox spacing="10">
-                    <padding>
-                        <Insets top="10" left="20" bottom="20" right="10" />
-                    </padding>
-                    <TableView fx:id="tblProductos" prefHeight="400">
-                        <columns>
-                            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-                            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="180"/>
-                            <TableColumn fx:id="colTipo" text="Tipo" prefWidth="100"/>
-                            <TableColumn fx:id="colCantidad" text="Cantidad" prefWidth="80"/>
-                            <TableColumn fx:id="colMasa" text="Masa (kg)" prefWidth="100"/>
-                        </columns>
-                    </TableView>
-                </VBox>
+    <left>
+        <VBox spacing="8">
+            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
 
-                <!-- Formulario -->
-                <VBox spacing="10">
-                    <padding>
-                        <Insets top="10" left="10" bottom="20" right="20" />
-                    </padding>
+            <children>
+                <Label text="ID:"/>
+                <TextField fx:id="txtId" promptText="ID (ingresado manualmente)"/>
 
-                    <Label text="Nuevo Producto">
-                        <style>
-                            -fx-font-size: 18px;
-                            -fx-font-weight: bold;
-                        </style>
-                    </Label>
+                <Label text="Nombre:"/>
+                <TextField fx:id="txtNombre"/>
 
-                    <GridPane hgap="10" vgap="8">
-                        <columnConstraints>
-                            <ColumnConstraints percentWidth="40"/>
-                            <ColumnConstraints percentWidth="60"/>
-                        </columnConstraints>
+                <Label text="Tipo de Producto:"/>
+                <ComboBox fx:id="cmbTipo"/>
 
-                        <children>
-                            <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label text="Masa (kg):"/>
+                <TextField fx:id="txtMasa"/>
 
-                            <Label text="Tipo:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                            <ComboBox fx:id="cmbTipo" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <Label text="Volumen (m3):"/>
+                <TextField fx:id="txtVolumen"/>
 
-                            <Label text="Masa (kg):" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtMasa" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Label text="Cantidad:"/>
+                <TextField fx:id="txtCantidad"/>
 
-                            <Label text="Volumen (m³):" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtVolumen" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <Label text="Fecha Caducidad:"/>
+                <TextField fx:id="txtFechaCaducidad" promptText="YYYY-MM-DD"/>
 
-                            <Label text="Cantidad:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtCantidad" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                <Label text="Nivel Criticidad:"/>
+                <ComboBox fx:id="cmbNivelCriticidad"/>
 
-                            <Label text="Fecha de Caducidad:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtFechaCaducidad" promptText="dd/MM/yyyy"
-                                       GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                <Label text="Observaciones:"/>
+                <TextArea fx:id="txtObservaciones" prefRowCount="3"/>
 
-                            <Label text="Nivel de Criticidad:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-                            <ComboBox fx:id="cmbNivelCriticidad" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-
-                            <Label text="Observaciones:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-                            <TextArea fx:id="txtObservaciones" GridPane.rowIndex="7" GridPane.columnIndex="1"
-                                      prefRowCount="3"/>
-                        </children>
-                    </GridPane>
-
-                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                <HBox spacing="10">
+                    <children>
                         <Button text="Guardar" onAction="#onGuardar"/>
-                        <Button text="Cancelar" onAction="#onCancelar"/>
-                    </HBox>
-                </VBox>
-            </items>
-        </SplitPane>
+                        <Button text="Editar" onAction="#onEditar"/>
+                    </children>
+                </HBox>
+
+                <HBox spacing="10">
+                    <children>
+                        <Button text="Eliminar" onAction="#onEliminar" style="-fx-text-fill: red;"/>
+                        <Button text="Limpiar" onAction="#onLimpiar"/>
+                    </children>
+                </HBox>
+
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox>
+            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+            <children>
+
+                <TableView fx:id="tblProductos" prefHeight="500">
+                    <columns>
+
+                        <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+                        <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                        <TableColumn fx:id="colTipo" text="Tipo" prefWidth="100"/>
+
+                        <TableColumn fx:id="colMasa" text="Masa (kg)" prefWidth="90"/>
+                        <TableColumn fx:id="colVolumen" text="Volumen" prefWidth="90"/>
+
+                        <TableColumn fx:id="colFechaCaducidad" text="Caducidad" prefWidth="110"/>
+                        <TableColumn fx:id="colCantidad" text="Cantidad" prefWidth="90"/>
+                        <TableColumn fx:id="colNivelCriticidad" text="Criticidad" prefWidth="110"/>
+                        <TableColumn fx:id="colObservaciones" text="Observaciones" prefWidth="180"/>
+
+                    </columns>
+                </TableView>
+
+            </children>
+        </VBox>
     </center>
 
 </BorderPane>
